@@ -42,7 +42,7 @@ def fetch_and_save_to_gcs(api_name, gcs_bucket):
     return data
 
 if __name__ == "__main__":
-    GCS_BUCKET = "savannah_informatics_assesment" 
+    GCS_BUCKET = "" 
 
     # Loop through all API endpoints and save data separately
     for api_name in API_ENDPOINTS.keys():
@@ -50,6 +50,8 @@ if __name__ == "__main__":
 
 '''
 
+
+'''
 import requests
 import json
 import logging
@@ -128,3 +130,231 @@ if __name__ == "__main__":
             logging.error(f"Failed to process data for {api_name}.")
         else:
             logging.info(f"Successfully processed data for {api_name}.")
+
+'''
+
+'''
+import requests
+import pandas as pd
+
+# Fetch the data
+response = requests.get("https://dummyjson.com/carts")
+data = response.json()
+
+# Flatten the carts and products
+carts = data['carts']
+flat_data = []
+
+for cart in carts:
+    for product in cart['products']:
+        flat_data.append({
+            'cart_id': cart['id'],
+            'user_id': cart['userId'],
+            'total_cart_value': cart['total'],
+            'discounted_total': cart['discountedTotal'],
+            'total_products_in_cart': cart['totalProducts'],
+            'total_quantity': cart['totalQuantity'],
+            'product_id': product['id'],
+            'product_title': product['title'],
+            'product_price': product['price'],
+            'product_quantity': product['quantity'],
+            'product_total': product['total'],
+            'discount_percentage': product['discountPercentage'],
+            'discounted_price': product['discountedPrice']
+        })
+
+# Convert to a DataFrame for further processing or saving
+df = pd.DataFrame(flat_data)
+
+# Save to a CSV or view the DataFrame
+df.to_csv('flattened_carts.csv', index=False)
+print(df.head())
+
+'''
+
+'''
+from google.cloud import storage
+import pandas as pd
+import json
+
+# Initialize the Google Cloud Storage client
+client = storage.Client()
+
+# Define your bucket and file name
+bucket_name = "savannah_informatics_assesment"
+file_name = "raw/carts_raw.json"
+
+# Get the bucket and blob
+bucket = client.bucket(bucket_name)
+blob = bucket.blob(file_name)
+
+# Download the JSON file as a string
+data_string = blob.download_as_text()
+
+# Parse the JSON data
+data = json.loads(data_string)
+
+# Flatten the carts and products
+carts = data['carts']
+flat_data = []
+
+for cart in carts:
+    for product in cart['products']:
+        flat_data.append({
+            'cart_id': cart['id'],
+            'user_id': cart['userId'],
+            'total_cart_value': cart['total'],
+            'discounted_total': cart['discountedTotal'],
+            'total_products_in_cart': cart['totalProducts'],
+            'total_quantity': cart['totalQuantity'],
+            'product_id': product['id'],
+            'product_title': product['title'],
+            'product_price': product['price'],
+            'product_quantity': product['quantity'],
+            'product_total': product['total'],
+            'discount_percentage': product['discountPercentage'],
+#            'discounted_price': product['discountedPrice']
+        })
+
+# Convert to a DataFrame for further processing or saving
+df = pd.DataFrame(flat_data)
+
+# Save to a CSV or view the DataFrame
+df.to_csv('flattened_carts.csv', index=False)
+print(df.head())
+
+'''
+
+'''
+from google.cloud import storage
+import pandas as pd
+import json
+
+# Initialize the Google Cloud Storage client
+client = storage.Client()
+
+# Define your bucket and file name
+bucket_name = "savannah_informatics_assesment"
+file_name = "raw/carts_raw.json"
+
+# Get the bucket and blob
+bucket = client.bucket(bucket_name)
+blob = bucket.blob(file_name)
+
+# Download the JSON file as a string
+data_string = blob.download_as_text()
+
+# Parse the JSON data
+data = json.loads(data_string)
+
+# Flatten the carts and products
+carts = data['carts']
+flat_data = []
+
+for cart in carts:
+    for product in cart['products']:
+        flat_data.append({
+            'cart_id': cart['id'],
+            'user_id': cart['userId'],
+            'product_id': product['id'],
+            'quantity': product['quantity'],
+            'price': product['price'],
+            'total_cart_value': cart['total']
+        })
+
+# Convert to a DataFrame for further processing or saving
+df = pd.DataFrame(flat_data)
+
+# Save to a CSV or view the DataFrame
+df.to_csv('flattened_carts.csv', index=False)
+print(df.head())
+
+'''
+
+'''
+from google.cloud import storage
+import pandas as pd
+import json
+
+# Initialize the Google Cloud Storage client
+client = storage.Client()
+
+# Define your bucket and file name
+bucket_name = "savannah_informatics_assesment"
+file_name = "raw/products_raw.json"
+
+# Get the bucket and blob
+bucket = client.bucket(bucket_name)
+blob = bucket.blob(file_name)
+
+# Download the JSON file as a string
+data_string = blob.download_as_text()
+
+# Parse the JSON data
+data = json.loads(data_string)
+
+# Extract and filter products
+products = data['products']
+filtered_products = [
+    {
+        'product_id': product['id'],
+        'name': product['title'],
+        'category': product['category'],
+        'brand': product['brand'],
+        'price': product['price']
+    }
+    for product in products if product['price'] > 50
+]
+
+# Convert to a DataFrame for further processing or saving
+df = pd.DataFrame(filtered_products)
+
+# Save to a CSV or view the DataFrame
+df.to_csv('filtered_products.csv', index=False)
+print(df.head())
+
+'''
+
+from google.cloud import storage
+import pandas as pd
+import json
+
+# Initialize the Google Cloud Storage client
+client = storage.Client()
+
+# Define your bucket and file name
+bucket_name = "savannah_informatics_assesment"
+file_name = "raw/users_raw.json"
+
+# Get the bucket and blob
+bucket = client.bucket(bucket_name)
+blob = bucket.blob(file_name)
+
+# Download the JSON file as a string
+data_string = blob.download_as_text()
+
+# Parse the JSON data
+data = json.loads(data_string)
+
+# Extract and flatten users data
+users = data['users']
+flattened_users = [
+    {
+        'user_id': user['id'],
+        'first_name': user['firstName'],
+        'last_name': user['lastName'],
+        'gender': user['gender'],
+        'age': user['age'],
+        'street': user['address']['street'],
+        'city': user['address']['city'],
+        'postal_code': user['address']['postalCode']
+    }
+    for user in users
+]
+
+# Convert to a DataFrame for further processing or saving
+df = pd.DataFrame(flattened_users)
+
+# Save to a CSV or view the DataFrame
+df.to_csv('flattened_users.csv', index=False)
+print(df.head())
