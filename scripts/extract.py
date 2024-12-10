@@ -315,46 +315,50 @@ print(df.head())
 
 '''
 
-from google.cloud import storage
+
+
 import pandas as pd
+from google.cloud import storage
 import json
 
-# Initialize the Google Cloud Storage client
+# Initialize GCS client
 client = storage.Client()
 
-# Define your bucket and file name
-bucket_name = "savannah_informatics_assesment"
-file_name = "raw/users_raw.json"
+# Define the bucket and file details
+bucket_name = "savannah_informatics_assesment"  # Replace with your GCS bucket name
+file_name = "raw/users_raw.json"  # Replace with the path to the JSON file in your bucket
 
-# Get the bucket and blob
-bucket = client.bucket(bucket_name)
+# Fetch the JSON file from the GCS bucket
+bucket = client.get_bucket(bucket_name)
 blob = bucket.blob(file_name)
-
-# Download the JSON file as a string
-data_string = blob.download_as_text()
+json_data = blob.download_as_text()
 
 # Parse the JSON data
-data = json.loads(data_string)
+data = json.loads(json_data)
 
-# Extract and flatten users data
+# Flatten the users
 users = data['users']
-flattened_users = [
-    {
+flat_data = []
+
+for user in users:
+    flat_data.append({
         'user_id': user['id'],
         'first_name': user['firstName'],
         'last_name': user['lastName'],
         'gender': user['gender'],
         'age': user['age'],
-        'street': user['address']['street'],
+        'street': user['address']['address'],
         'city': user['address']['city'],
-        'postal_code': user['address']['postalCode']
-    }
-    for user in users
-]
+        'postal_code': user['address']['postalCode'],
+    })
 
 # Convert to a DataFrame for further processing or saving
-df = pd.DataFrame(flattened_users)
+df = pd.DataFrame(flat_data)
 
 # Save to a CSV or view the DataFrame
-df.to_csv('flattened_users.csv', index=False)
+output_file_name = "filtered_users.csv"
+df.to_csv(output_file_name, index=False)
+
+print(f"Data saved to {output_file_name}")
 print(df.head())
+
