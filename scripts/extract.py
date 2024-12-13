@@ -51,7 +51,7 @@ if __name__ == "__main__":
 '''
 
 
-'''
+
 import requests
 import json
 import logging
@@ -131,7 +131,9 @@ if __name__ == "__main__":
         else:
             logging.info(f"Successfully processed data for {api_name}.")
 
-'''
+
+
+
 
 '''
 import requests
@@ -316,7 +318,7 @@ print(df.head())
 '''
 
 
-
+'''
 import pandas as pd
 from google.cloud import storage
 import json
@@ -362,3 +364,4 @@ df.to_csv(output_file_name, index=False)
 print(f"Data saved to {output_file_name}")
 print(df.head())
 
+'''
