@@ -1,13 +1,14 @@
-from datetime import datetime
+import json
+import logging
+import requests
 from airflow import DAG
-from airflow.operators.python_operator import PythonOperator
+from datetime import datetime
 from google.cloud import storage
 from google.cloud import bigquery
 from google.oauth2 import service_account
+from airflow.operators.python_operator import PythonOperator
 from google.api_core.exceptions import GoogleAPIError, NotFound
-import requests
-import json
-import logging
+from requests.exceptions import RequestException, HTTPError, Timeout
 from requests.exceptions import RequestException, HTTPError, Timeout
 
 # Define the API endpoints

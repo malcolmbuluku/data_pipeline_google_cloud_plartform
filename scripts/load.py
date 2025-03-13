@@ -1,6 +1,9 @@
 '''
 Loading Data to BigQuery
-
+The final step in the ETL pipeline is to load the transformed data into BigQuery.
+The load_csv_to_bigquery function loads a CSV file into a BigQuery table.
+It first infers the schema from the CSV file header and creates the table if it doesn't exist.
+The function then loads the CSV file into the table using the BigQuery client library.
 '''
 
 
